@@ -13,13 +13,13 @@ import org.junit.jupiter.api.io.TempDir;
 
 import my.celium.org.Mycel;
 import my.celium.org.betterserverlist.client.ScreenSwap;
-import my.celium.org.internal.PlatformHolder;
+import my.celium.org.testing.MycelTesting;
 
 /** The mod boots on Mycel with a small, well-defaulted config. */
 class BetterServerListModTest {
     @BeforeAll
     static void initOnce(@TempDir Path tempDir) {
-        PlatformHolder.setForTesting(new TestPlatform(tempDir));
+        MycelTesting.useConfigDir(tempDir);
         BetterServerListMod.init();
     }
 
