@@ -19,7 +19,7 @@ import my.celium.org.metadata.ModMetadata;
 public final class BetterServerListMod {
     public static final String ID = "betterserverlist";
 
-    public static final ModMetadata META = ModMetadata.builder(ID, "Better Server List", "1.0.1")
+    public static final ModMetadata META = ModMetadata.builder(ID, "Better Server List", "1.0.2")
             .author("MyCelium")
             .website("https://www.curseforge.com/minecraft/mc-mods/better-server-list")
             .updateUrl("https://wiki.mycelium-gg.org/updates/betterserverlist.json")
