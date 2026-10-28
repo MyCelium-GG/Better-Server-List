@@ -2,6 +2,7 @@ package my.celium.org.betterserverlist.client;
 
 import java.util.function.Consumer;
 
+import my.celium.org.client.MycelScreens;
 import my.celium.org.client.MycelTheme;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
@@ -70,7 +71,7 @@ final class TextPromptScreen extends Screen {
             return;
         }
         onDone.accept(box.getValue().strip());
-        minecraft.gui.setScreen(parent);
+        MycelScreens.open(parent);
     }
 
     @Override
@@ -84,7 +85,7 @@ final class TextPromptScreen extends Screen {
 
     @Override
     public void onClose() {
-        minecraft.gui.setScreen(parent);
+        MycelScreens.open(parent);
     }
 
     @Override

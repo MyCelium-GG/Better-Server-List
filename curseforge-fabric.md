@@ -7,5 +7,5 @@ categories, pinned favorites, search, sorting and drag and drop.
 - Type to search; sort by name, players, ping or last played
 - Imports your servers and keeps the vanilla list in sync
 
-Requires **Mycel**. Needs Fabric Loader, Fabric API, Minecraft 26.3, Java 25.
+Requires **Mycel**. Needs Fabric Loader, Fabric API, Minecraft 26.3, 26.2 or 26.1 (26.1-26.1.2), Java 25.
 MIT license.

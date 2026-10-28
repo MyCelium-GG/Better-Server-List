@@ -21,6 +21,7 @@ import my.celium.org.betterserverlist.data.SavedServer;
 import my.celium.org.betterserverlist.data.ServerText;
 import my.celium.org.betterserverlist.data.Sort;
 import my.celium.org.betterserverlist.data.TimeText;
+import my.celium.org.client.MycelScreens;
 import my.celium.org.client.MycelTheme;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -484,7 +485,7 @@ public final class ServerListScreen extends Screen {
 
     @Override
     public void onClose() {
-        minecraft.gui.setScreen(parent);
+        MycelScreens.open(parent);
     }
 
     // =============================================================== actions
@@ -516,11 +517,11 @@ public final class ServerListScreen extends Screen {
 
     private void directConnect() {
         ServerData typed = new ServerData(I18n.get("selectServer.defaultName"), "", ServerData.Type.OTHER);
-        minecraft.gui.setScreen(new DirectJoinServerScreen(this, ok -> {
+        MycelScreens.open(new DirectJoinServerScreen(this, ok -> {
             if (ok) {
                 connect(vanilla.rememberDirect(typed));
             } else {
-                minecraft.gui.setScreen(this);
+                MycelScreens.open(this);
             }
         }, typed));
     }
@@ -528,7 +529,7 @@ public final class ServerListScreen extends Screen {
     /** Adds a server to {@code section}, or next to the selection's category when {@code null}. */
     private void addServer(Section section) {
         ServerData typed = new ServerData("", "", ServerData.Type.OTHER);
-        minecraft.gui.setScreen(new ManageServerScreen(this, Component.translatable("manageServer.add.title"), ok -> {
+        MycelScreens.open(new ManageServerScreen(this, Component.translatable("manageServer.add.title"), ok -> {
             if (ok && !typed.ip.isBlank()) {
                 SavedServer server = new SavedServer(typed.name.isBlank() ? typed.ip.trim() : typed.name, typed.ip.trim());
                 Section target = section;
@@ -544,7 +545,7 @@ public final class ServerListScreen extends Screen {
                 save();
                 flash("Added " + server.name, MycelTheme.GOOD);
             }
-            minecraft.gui.setScreen(this);
+            MycelScreens.open(this);
         }, typed));
     }
 
@@ -552,14 +553,14 @@ public final class ServerListScreen extends Screen {
         ServerData current = pings.data(server);
         ServerData editing = new ServerData(server.name, server.address, ServerData.Type.OTHER);
         editing.setResourcePackStatus(current.getResourcePackStatus());
-        minecraft.gui.setScreen(new ManageServerScreen(this, Component.translatable("manageServer.edit.title"), ok -> {
+        MycelScreens.open(new ManageServerScreen(this, Component.translatable("manageServer.edit.title"), ok -> {
             if (ok && !editing.ip.isBlank()) {
                 server.name = editing.name.isBlank() ? editing.ip.trim() : editing.name;
                 server.address = editing.ip.trim();
                 pings.data(server).setResourcePackStatus(editing.getResourcePackStatus());
                 save();
             }
-            minecraft.gui.setScreen(this);
+            MycelScreens.open(this);
         }, editing));
     }
 
@@ -579,17 +580,17 @@ public final class ServerListScreen extends Screen {
             action.run();
             return;
         }
-        minecraft.gui.setScreen(new ConfirmScreen(ok -> {
+        MycelScreens.open(new ConfirmScreen(ok -> {
             if (ok) {
                 action.run();
             }
-            minecraft.gui.setScreen(this);
+            MycelScreens.open(this);
         }, Component.literal(title), Component.literal(detail), Component.literal(yes), CommonComponents.GUI_CANCEL));
     }
 
     private void prompt(String title, String label, String initial, int max, boolean allowEmpty,
             java.util.function.Consumer<String> done) {
-        minecraft.gui.setScreen(new TextPromptScreen(this, title, label, initial, max, allowEmpty, done));
+        MycelScreens.open(new TextPromptScreen(this, title, label, initial, max, allowEmpty, done));
     }
 
     private void refresh() {
@@ -1259,8 +1260,8 @@ public final class ServerListScreen extends Screen {
     }
 
     private boolean hasCopyModifier() {
-        return InputConstants.isKeyDown(InputConstants.KEY_LCONTROL)
-                || InputConstants.isKeyDown(InputConstants.KEY_RCONTROL);
+        return Keys.isDown(InputConstants.KEY_LCONTROL)
+                || Keys.isDown(InputConstants.KEY_RCONTROL);
     }
 
     // ================================================================= input
@@ -1537,9 +1538,8 @@ public final class ServerListScreen extends Screen {
             return true;
         }
         // Typing starts a search. Characters only arrive while a text box has
-        // focus, so the first one comes from the key itself (SDL key codes of
-        // printable keys are their characters).
-        int code = event.shortcutKey();
+        // focus, so the first one comes from the key itself.
+        int code = Keys.typedKey(event);
         if (!event.hasControlDown() && !event.hasAltDown() && code > ' ' && code < 127) {
             setFocused(search);
             search.setFocused(true);

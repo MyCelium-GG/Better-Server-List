@@ -16,7 +16,7 @@ diagnostics are reused.
 | | |
 |---|---|
 | Mod id | `betterserverlist` |
-| Minecraft | **26.3** · Java **25** |
+| Minecraft | **26.3**, **26.2**, **26.1** (26.1-26.1.2) · Java **25** |
 | Loaders | Fabric, Forge, NeoForge |
 | Side | Client only |
 | Docs | [wiki.mycelium-gg.org/betterserverlist](https://wiki.mycelium-gg.org/betterserverlist/) |

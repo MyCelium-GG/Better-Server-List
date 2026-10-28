@@ -3,6 +3,7 @@ package my.celium.org.betterserverlist.client;
 import java.lang.reflect.Field;
 
 import my.celium.org.betterserverlist.BetterServerListMod;
+import my.celium.org.client.MycelScreens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -47,7 +48,7 @@ public final class ScreenSwap {
     /** Opens the vanilla screen and keeps it until the title screen. */
     static void openVanilla(Screen parent) {
         vanillaChosen = true;
-        Minecraft.getInstance().gui.setScreen(new JoinMultiplayerScreen(parent));
+        MycelScreens.open(new JoinMultiplayerScreen(parent));
     }
 
     /** A small "Better list" button for the top-right of a vanilla multiplayer screen, or {@code null}. */
@@ -57,7 +58,7 @@ public final class ScreenSwap {
         }
         Button button = Button.builder(Component.literal("Better list"), b -> {
             vanillaChosen = false;
-            Minecraft.getInstance().gui.setScreen(new ServerListScreen(lastScreenOf(screen)));
+            MycelScreens.open(new ServerListScreen(lastScreenOf(screen)));
         }).bounds(screen.width - 84, 6, 78, 20).build();
         button.setTooltip(Tooltip.create(Component.literal("Back to Better Server List")));
         return button;

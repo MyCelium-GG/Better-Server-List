@@ -1,6 +1,7 @@
 package my.celium.org.betterserverlist.fabric;
 
 import my.celium.org.betterserverlist.client.ScreenSwap;
+import my.celium.org.client.MycelScreens;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.client.screen.v1.Screens;
@@ -17,7 +18,7 @@ public final class BetterServerListFabricClient implements ClientModInitializer 
         ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
             Screen replacement = ScreenSwap.replacement(screen);
             if (replacement != null) {
-                client.gui.setScreen(replacement);
+                MycelScreens.open(replacement);
                 return;
             }
             Button button = ScreenSwap.backButton(screen);
