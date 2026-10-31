@@ -111,7 +111,7 @@ classes and is covered by unit tests.
 
 Mycel itself comes from [JitPack](https://jitpack.io/#MyCelium-GG/MyCel-Lib)
 as one universal jar for all loaders
-(`com.github.MyCelium-GG:MyCel-Lib:1.4.0`). No local setup needed.
+(the version is `mycel_version` in `gradle.properties`). No local setup needed.
 
 ## Releasing
 
