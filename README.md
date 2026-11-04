@@ -82,6 +82,13 @@ diagnostics are reused.
   lists (added with the vanilla screen, or shipped by a modpack) are added
   to the first list.
 
+## Anonymous stats
+
+Better Server List sends anonymous stats (how big lists get, which features get used, and errors in its own code; counts only, never server names or addresses) to its FastStats project through
+Mycel. It follows Mycel's choice exactly: the one-time screen in your own
+game, `shareStats` / `shareErrors` in `config/mycel.json` on servers.
+Details: https://wiki.mycelium-gg.org/privacy#stats-betterserverlist
+
 ## Configuration (`config/betterserverlist.json`)
 
 | Key | Default | Meaning |

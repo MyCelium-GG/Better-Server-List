@@ -19,7 +19,7 @@ import my.celium.org.metadata.ModMetadata;
 public final class BetterServerListMod {
     public static final String ID = "betterserverlist";
 
-    public static final ModMetadata META = ModMetadata.builder(ID, "Better Server List", "1.1.1")
+    public static final ModMetadata META = ModMetadata.builder(ID, "Better Server List", "1.1.2")
             .author("MyCelium")
             .website("https://www.curseforge.com/minecraft/mc-mods/better-server-list")
             .updateUrl("https://wiki.mycelium-gg.org/updates/betterserverlist.json")
@@ -52,6 +52,7 @@ public final class BetterServerListMod {
         debug = builder.booleanValue("debug", false,
                 "Log loading, saving, syncing and screen swaps to the game log.");
         config = builder.build();
+        ServerListStats.start();
     }
 
     /** Info-level log line tagged {@code [debug]}, only while the {@code debug} option is on. */

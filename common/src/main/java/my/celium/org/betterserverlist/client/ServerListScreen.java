@@ -175,6 +175,8 @@ public final class ServerListScreen extends Screen {
                 save();
             }
         }
+        my.celium.org.betterserverlist.ServerListStats.update(library);
+        my.celium.org.betterserverlist.ServerListStats.count("open");
     }
 
     private SavedList list() {
@@ -185,6 +187,7 @@ public final class ServerListScreen extends Screen {
 
     private void save() {
         rowsDirty = true;
+        my.celium.org.betterserverlist.ServerListStats.update(library);
         try {
             store.save(library);
         } catch (IOException e) {
@@ -411,7 +414,10 @@ public final class ServerListScreen extends Screen {
         footerButton(right, y, back, false, this::onClose);
         Component vanillaLabel = Component.literal("Vanilla");
         right -= Math.max(36, FlatButton.widthFor(font, vanillaLabel)) + 4;
-        footerButton(right, y, vanillaLabel, false, () -> ScreenSwap.openVanilla(parent))
+        footerButton(right, y, vanillaLabel, false, () -> {
+            my.celium.org.betterserverlist.ServerListStats.count("vanilla_screen");
+            ScreenSwap.openVanilla(parent);
+        })
                 .setTooltip(Tooltip.create(Component.literal("Open the vanilla server list")));
         Component refreshLabel = Component.literal("Refresh");
         right -= Math.max(36, FlatButton.widthFor(font, refreshLabel)) + 4;
@@ -453,6 +459,9 @@ public final class ServerListScreen extends Screen {
 
     @Override
     public void removed() {
+        if (!query.isBlank()) {
+            my.celium.org.betterserverlist.ServerListStats.count("search");
+        }
         if (lanDetector != null) {
             lanDetector.interrupt();
             lanDetector = null;
@@ -503,10 +512,12 @@ public final class ServerListScreen extends Screen {
         server.lastJoined = System.currentTimeMillis();
         server.joins++;
         save();
+        my.celium.org.betterserverlist.ServerListStats.count("join");
         connect(pings.data(server));
     }
 
     private void joinLan(LanServer lan) {
+        my.celium.org.betterserverlist.ServerListStats.count("join_lan");
         connect(new ServerData(lan.getMotd(), lan.getAddress(), ServerData.Type.LAN));
     }
 
@@ -519,6 +530,7 @@ public final class ServerListScreen extends Screen {
         ServerData typed = new ServerData(I18n.get("selectServer.defaultName"), "", ServerData.Type.OTHER);
         MycelScreens.open(new DirectJoinServerScreen(this, ok -> {
             if (ok) {
+                my.celium.org.betterserverlist.ServerListStats.count("direct_connect");
                 connect(vanilla.rememberDirect(typed));
             } else {
                 MycelScreens.open(this);
@@ -604,6 +616,7 @@ public final class ServerListScreen extends Screen {
             server.pinned = false;
             list().add(server, Section.of(server.category));
         } else {
+            my.celium.org.betterserverlist.ServerListStats.count("pin");
             list().add(server, Section.PINNED);
         }
         save();
@@ -686,6 +699,9 @@ public final class ServerListScreen extends Screen {
             return;
         }
         save();
+        if (added > 0) {
+            my.celium.org.betterserverlist.ServerListStats.count("paste");
+        }
         int skipped = entries.size() - added;
         flash("Pasted " + added + " server" + (added == 1 ? "" : "s") + (skipped > 0 ? ", " + skipped + " already here" : ""),
                 MycelTheme.GOOD);
@@ -1384,6 +1400,7 @@ public final class ServerListScreen extends Screen {
             }
             default -> {
                 library.sort = library.sort.next();
+                my.celium.org.betterserverlist.ServerListStats.count("sort_change");
                 save();
                 flash("Sorted by " + library.sort.label.toLowerCase(Locale.ROOT), MycelTheme.DIM);
             }
