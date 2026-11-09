@@ -1,132 +1,36 @@
-# Better Server List
+<p align="center">
+  <img src="https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/header.svg" alt="Better Server List" width="100%">
+</p>
 
-[![License](https://img.shields.io/github/license/MyCelium-GG/Better-Server-List)](LICENSE)
+<p align="center">
+  <a href="https://www.curseforge.com/minecraft/mc-mods/better-server-list"><img src="https://img.shields.io/curseforge/dt/1762891?style=flat-square&logo=curseforge&logoColor=white&label=downloads&color=F16436" alt="CurseForge downloads"></a>
+  <a href="https://www.curseforge.com/minecraft/mc-mods/better-server-list/files"><img src="https://img.shields.io/badge/Minecraft-26.1%20--%2026.3-62B47A?style=flat-square" alt="Minecraft 26.1 to 26.3"></a>
+  <img src="https://img.shields.io/badge/loaders-Fabric%2C%20Forge%2C%20NeoForge-1E88E5?style=flat-square" alt="Fabric, Forge, NeoForge">
+  <img src="https://img.shields.io/badge/side-client%20only-8E44AD?style=flat-square" alt="Client only">
+  <img src="https://img.shields.io/badge/Java-25-E76F00?style=flat-square&logo=openjdk&logoColor=white" alt="Java 25">
+  <a href="https://www.curseforge.com/minecraft/mc-mods/mycel"><img src="https://img.shields.io/badge/requires-Mycel-F16436?style=flat-square&logo=curseforge&logoColor=white" alt="Requires Mycel"></a>
+  <a href="https://wiki.mycelium-gg.org/betterserverlist/"><img src="https://img.shields.io/badge/docs-wiki-0A7BBB?style=flat-square" alt="Docs on the wiki"></a>
+  <a href="https://github.com/MyCelium-GG/Better-Server-List/blob/main/LICENSE"><img src="https://img.shields.io/github/license/MyCelium-GG/Better-Server-List?style=flat-square&color=F2C14E" alt="License"></a>
+</p>
 
-The multiplayer screen, organized. Keep your servers in several lists, group
-them into collapsible categories, pin favorites to the top, and find any
-server by typing. Drag and drop to sort, right-click for everything else.
-Your existing servers are imported on first start and the vanilla
-`servers.dat` stays in sync, so nothing is lost if you remove the mod.
-Client side.
+![About the mod](https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/about-the-mod.svg)
 
-Built on [Mycel](https://github.com/MyCelium-GG/MyCel-Lib) (`my.celium.org`), the shared
-core for the MyCelium ecosystem: configuration, platform abstraction and
-diagnostics are reused.
+<img src="https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/about.svg" alt="Better Server List Keep your servers in several lists, group them into collapsible categories, pin favorites to the top, and find any server by typing. Drag and drop to sort, right-click for everything else. Your existing servers are imported on first start and the vanilla servers.dat stays in sync, so nothing is lost if you remove the mod. Client side." width="100%">
 
-| | |
-|---|---|
-| Mod id | `betterserverlist` |
-| Minecraft | **26.3**, **26.2**, **26.1** (26.1-26.1.2) · Java **25** |
-| Loaders | Fabric, Forge, NeoForge |
-| Side | Client only |
-| Docs | [wiki.mycelium-gg.org/betterserverlist](https://wiki.mycelium-gg.org/betterserverlist/) |
+![Behavior](https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/behavior.svg)
 
-![The Better Server List screen](https://wiki.mycelium-gg.org/betterserverlist/img/overview.png)
+<img src="https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/behavior-box.svg" alt="Replaces the multiplayer screen.: Clicking Multiplayer opens Better Server List instead of the vanilla list. Vanilla in the footer opens the vanilla screen until you return to the title screen; a Better list button in its corner brings you back. Lists: (left sidebar): as many as you like, e.g. Favorites, Modded, Events. Click to switch, double-click to rename, right-click to rename, reorder, copy " width="100%">
 
-## Behavior
+<img src="https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/behavior-table.svg" alt="Behavior table: Typing, Ctrl+F, Search; Up / Down, Select the previous / next server; Shift + Up / Down, Move the selected server within its section; Enter, Join (from the search box: the first match); Delete, Delete the selected server; F2, Edit the selected server; Ctrl+C, Copy the selected server's address; F5, Ping every server again; Esc, Clear the search, close a menu, or go back" width="100%">
 
-- **Replaces the multiplayer screen.** Clicking *Multiplayer* opens Better
-  Server List instead of the vanilla list. *Vanilla* in the footer opens the
-  vanilla screen until you return to the title screen; a *Better list*
-  button in its corner brings you back.
-- **Lists** (left sidebar): as many as you like, e.g. *Favorites*,
-  *Modded*, *Events*. Click to switch, double-click to rename, right-click
-  to rename, reorder, copy as text, paste servers or delete.
-- **Categories**: collapsible sections inside a list, each with a color.
-  Create them with *+ Category* or from a server's menu. Rename, recolor,
-  reorder and delete from the header's right-click menu; deleting a category
-  keeps its servers (they become uncategorized).
-- **Pinned**: pin a server (star on hover, or the menu) and it moves to a
-  *Pinned* section at the top of its list.
-- **Search**: just start typing. Matches the name, address, MOTD, note and
-  category. Sections open while searching and empty ones hide.
-- **Sort**: Manual (your order), Name, Players, Ping or Last played, inside
-  each section. **Online only** hides servers that did not answer.
-- **Drag and drop** (Manual sort): drop a server between two others, on a
-  section header to move it into that section, or on a list in the sidebar
-  to move it there (hold Ctrl to copy).
-- **Notes and history**: give any server a note. Hovering a server's name
-  shows its address, category, note, when you last played and how often.
-- **Rows look like vanilla's**: server icon, MOTD, player count with the
-  player list on hover, ping bars. Servers that can't be reached show the
-  red cross (vanilla keeps animating forever).
-- **LAN worlds** appear in their own section at the bottom.
-- **Copy and paste lists as text**: one server per line
-  (`Name<TAB>address`). Pasting also takes `Name address` or bare addresses,
-  so a list shared in chat or Discord imports in one click.
+<img src="https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/behavior-box-2.svg" alt="Where your servers live:  config/betterserverlist-servers.json: lists, categories, pins, notes, play history, sort and filter. Written atomically; a file that no longer parses is kept as .broken and the lists are rebuilt from servers.dat. servers.dat (vanilla): kept in step with every change. It lists each address once, in list order, and still stores what the game remembers per server (icon, reso" width="100%">
 
-### Keys
+![Anonymous stats](https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/anonymous-stats.svg)
 
-| Key | Action |
-|---|---|
-| Typing, Ctrl+F | Search |
-| ↑ / ↓ | Select the previous / next server |
-| Shift + ↑ / ↓ | Move the selected server within its section |
-| Enter | Join (from the search box: the first match) |
-| Delete | Delete the selected server |
-| F2 | Edit the selected server |
-| Ctrl+C | Copy the selected server's address |
-| F5 | Ping every server again |
-| Esc | Clear the search, close a menu, or go back |
+<img src="https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/anonymous-stats-box.svg" alt="Better Server List sends anonymous stats (how big lists get, which features get used, and errors in its own code; counts only, never server names or addresses) to its FastStats project through Mycel. It follows Mycel's choice exactly: the one-time screen in your own game, shareStats / shareErrors in config/mycel.json on servers." width="100%">
 
-### Where your servers live
+![Configuration](https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/configuration.svg)
 
-- `config/betterserverlist-servers.json`: lists, categories, pins, notes,
-  play history, sort and filter. Written atomically; a file that no longer
-  parses is kept as `.broken` and the lists are rebuilt from `servers.dat`.
-- `servers.dat` (vanilla): kept in step with every change. It lists each
-  address once, in list order, and still stores what the game remembers per
-  server (icon, resource pack choice, accepted code of conduct). Vanilla's
-  hidden direct-connect history is left alone.
-- On every open, servers that appear in `servers.dat` but in none of your
-  lists (added with the vanilla screen, or shipped by a modpack) are added
-  to the first list.
+<img src="https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/configuration-table.svg" alt="Configuration table: enabled, true, Master switch (also toggleable live via Mycel.setEnabled).; replaceScreen, true, Open Better Server List instead of the vanilla multiplayer screen.; showLan, true, Look for LAN worlds and list them at the bottom.; confirmDelete, true, Ask before deleting a server, category or list.; debug, false, Log loading, saving, syncing and screen swaps." width="100%">
 
-## Anonymous stats
-
-Better Server List sends anonymous stats (how big lists get, which features get used, and errors in its own code; counts only, never server names or addresses) to its FastStats project through
-Mycel. It follows Mycel's choice exactly: the one-time screen in your own
-game, `shareStats` / `shareErrors` in `config/mycel.json` on servers.
-Details: https://wiki.mycelium-gg.org/privacy#stats-betterserverlist
-
-## Configuration (`config/betterserverlist.json`)
-
-| Key | Default | Meaning |
-|---|---|---|
-| `enabled` | `true` | Master switch (also toggleable live via `Mycel.setEnabled`). |
-| `replaceScreen` | `true` | Open Better Server List instead of the vanilla multiplayer screen. |
-| `showLan` | `true` | Look for LAN worlds and list them at the bottom. |
-| `confirmDelete` | `true` | Ask before deleting a server, category or list. |
-| `debug` | `false` | Log loading, saving, syncing and screen swaps. |
-
-Reload live with `/mycel reload betterserverlist`. A config screen is
-available from the mod list on Forge and NeoForge.
-
-## Building
-
-JDK 25, then:
-
-```sh
-./gradlew build            # all loaders + tests
-./gradlew :common:test     # unit tests only
-./gradlew :fabric:runClient
-```
-
-The list logic (sections, search, sorting, drag and drop, import and
-export, the JSON store) lives in `common/.../data` without Minecraft
-classes and is covered by unit tests.
-
-Mycel itself comes from [JitPack](https://jitpack.io/#MyCelium-GG/MyCel-Lib)
-as one universal jar for all loaders
-(the version is `mycel_version` in `gradle.properties`). No local setup needed.
-
-## Releasing
-
-Push a version tag (`git tag 1.0.0 && git push origin 1.0.0`). The
-`release` workflow builds the three loader jars, attaches them to a GitHub
-Release and uploads them to CurseForge once `curseforge_project_id` is set in
-`gradle.properties` (token in the `CURSEFORGE_TOKEN` secret).
-
-## License
-
-MIT, see [LICENSE](LICENSE).
+<img src="https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/configuration-box.svg" alt="Reload live with /mycel reload betterserverlist. A config screen is available from the mod list on Forge and NeoForge." width="100%">
