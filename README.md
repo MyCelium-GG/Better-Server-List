@@ -13,6 +13,8 @@
   <a href="https://github.com/MyCelium-GG/Better-Server-List/blob/main/LICENSE"><img src="https://img.shields.io/github/license/MyCelium-GG/Better-Server-List?style=flat-square&color=F2C14E" alt="License"></a>
 </p>
 
+<a href="https://www.curseforge.com/minecraft/mc-mods/mycel"><img src="https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/8f4918992599/docs/img/banners/mycel-required.svg" alt="Mycel is required: this mod needs the Mycel library to run. Install Mycel next to it, for the same Minecraft version and loader. Download it from CurseForge." width="100%"></a>
+
 ![About the mod](https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/about-the-mod.svg)
 
 <img src="https://raw.githubusercontent.com/MyCelium-GG/Better-Server-List/74d27e735d42/docs/img/banners/about.svg" alt="Better Server List Keep your servers in several lists, group them into collapsible categories, pin favorites to the top, and find any server by typing. Drag and drop to sort, right-click for everything else. Your existing servers are imported on first start and the vanilla servers.dat stays in sync, so nothing is lost if you remove the mod. Client side." width="100%">
