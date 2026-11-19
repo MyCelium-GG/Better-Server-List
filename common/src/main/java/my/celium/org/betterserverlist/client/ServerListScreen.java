@@ -160,7 +160,7 @@ public final class ServerListScreen extends Screen {
             loaded = store.load();
         } catch (IOException e) {
             BetterServerListMod.warn("{}", e.getMessage());
-            flash("Saved lists were unreadable; started over from servers.dat", MycelTheme.WARN);
+            flash(tr("flash.unreadable"), MycelTheme.WARN);
         }
         if (loaded == null) {
             library = Library.fromVanilla(vanilla.entries());
@@ -170,7 +170,7 @@ public final class ServerListScreen extends Screen {
             library = loaded;
             int imported = library.importMissing(vanilla.entries());
             if (imported > 0) {
-                flash("Added " + imported + " new server" + (imported == 1 ? "" : "s") + " from servers.dat",
+                flash(tr(imported == 1 ? "flash.imported.one" : "flash.imported", imported),
                         MycelTheme.GOOD);
                 save();
             }
@@ -192,7 +192,7 @@ public final class ServerListScreen extends Screen {
             store.save(library);
         } catch (IOException e) {
             BetterServerListMod.warn("Could not save {}: {}", store.file(), e.toString());
-            flash("Could not save your lists (see log)", MycelTheme.BAD);
+            flash(tr("flash.save_failed"), MycelTheme.BAD);
         }
         saveMirror();
     }
@@ -347,9 +347,8 @@ public final class ServerListScreen extends Screen {
 
     private List<Chip> chips() {
         List<Chip> out = new ArrayList<>();
-        String[] labels = {"+ Category", "Online only", "Sort: " + library.sort.label};
-        String[] tips = {"New category in this list", "Show only servers that answer, or all of them",
-                "Change the order inside each section. Dragging works with Manual."};
+        String[] labels = {"+ " + tr("chip.category"), tr("chip.online"), tr("chip.sort", sortName(library.sort))};
+        String[] tips = {tr("chip.category.tip"), tr("chip.online.tip"), tr("chip.sort.tip", sortName(Sort.MANUAL))};
         int x = listX1();
         for (int i = 0; i < labels.length; i++) {
             int w = font.width(labels[i]) + (i == 1 ? 20 : 12);
@@ -372,13 +371,14 @@ public final class ServerListScreen extends Screen {
     protected void init() {
         // A borderless box inside a themed frame drawn in renderToolbar.
         int boxW = Math.max(40, chipsLeft() - 6 - listX0());
-        search = new EditBox(font, listX0() + 6, TOOL_Y + 4, boxW - 12, 9, search, Component.literal("Search"));
+        search = new EditBox(font, listX0() + 6, TOOL_Y + 4, boxW - 12, 9, search, Component.translatable("betterserverlist.search"));
         search.setBordered(false);
         search.setTextColor(MycelTheme.TEXT);
         // The hint is not clipped to the box, so it must fit.
-        String hint = "Search name, address, MOTD, note…";
+        String hint = tr("search.hint");
         if (font.width(hint) > boxW - 14) {
-            hint = font.width("Search…") <= boxW - 14 ? "Search…" : "";
+            String shorter = tr("search.short");
+            hint = font.width(shorter) <= boxW - 14 ? shorter : "";
         }
         search.setHint(Component.literal(hint).withColor(MycelTheme.FAINT));
         search.setValue(query);
@@ -391,18 +391,18 @@ public final class ServerListScreen extends Screen {
 
         int y = height - FOOTER + (FOOTER - FlatButton.HEIGHT) / 2;
         int x = 8;
-        joinButton = footerButton(x, y, Component.literal("Join"), true, this::joinSelected);
+        joinButton = footerButton(x, y, Component.translatable("selectServer.select"), true, this::joinSelected);
         x += joinButton.getWidth() + 4;
-        x += footerButton(x, y, Component.literal("Add"), false, () -> addServer(null)).getWidth() + 4;
-        x += footerButton(x, y, Component.literal("Direct"), false, this::directConnect).getWidth() + 4;
-        editButton = footerButton(x, y, Component.literal("Edit"), false, () -> {
+        x += footerButton(x, y, Component.literal(tr("button.add")), false, () -> addServer(null)).getWidth() + 4;
+        x += footerButton(x, y, Component.literal(tr("button.direct")), false, this::directConnect).getWidth() + 4;
+        editButton = footerButton(x, y, Component.literal(tr("button.edit")), false, () -> {
             SavedServer server = selected();
             if (server != null) {
                 editServer(server);
             }
         });
         x += editButton.getWidth() + 4;
-        deleteButton = footerButton(x, y, Component.literal("Delete"), false, () -> {
+        deleteButton = footerButton(x, y, Component.literal(tr("button.delete")), false, () -> {
             SavedServer server = selected();
             if (server != null) {
                 deleteServer(server);
@@ -412,17 +412,17 @@ public final class ServerListScreen extends Screen {
         Component back = CommonComponents.GUI_BACK;
         right -= Math.max(36, FlatButton.widthFor(font, back));
         footerButton(right, y, back, false, this::onClose);
-        Component vanillaLabel = Component.literal("Vanilla");
+        Component vanillaLabel = Component.literal(tr("button.vanilla"));
         right -= Math.max(36, FlatButton.widthFor(font, vanillaLabel)) + 4;
         footerButton(right, y, vanillaLabel, false, () -> {
             my.celium.org.betterserverlist.ServerListStats.count("vanilla_screen");
             ScreenSwap.openVanilla(parent);
         })
-                .setTooltip(Tooltip.create(Component.literal("Open the vanilla server list")));
-        Component refreshLabel = Component.literal("Refresh");
+                .setTooltip(Tooltip.create(Component.literal(tr("button.vanilla.tip"))));
+        Component refreshLabel = Component.translatable("selectServer.refresh");
         right -= Math.max(36, FlatButton.widthFor(font, refreshLabel)) + 4;
         footerButton(right, y, refreshLabel, false, this::refresh)
-                .setTooltip(Tooltip.create(Component.literal("Ping every server again (F5)")));
+                .setTooltip(Tooltip.create(Component.literal(tr("button.refresh.tip"))));
         rowsDirty = true;
         clampSideScroll();
         updateButtons();
@@ -555,7 +555,7 @@ public final class ServerListScreen extends Screen {
                 selectedId = server.id;
                 selectedLan = null;
                 save();
-                flash("Added " + server.name, MycelTheme.GOOD);
+                flash(tr("flash.added", server.name), MycelTheme.GOOD);
             }
             MycelScreens.open(this);
         }, typed));
@@ -577,13 +577,13 @@ public final class ServerListScreen extends Screen {
     }
 
     private void deleteServer(SavedServer server) {
-        confirm("Delete " + server.name + "?", "It is removed from \"" + list().name + "\" only.", "Delete", () -> {
+        confirm(tr("confirm.delete_server", server.name), tr("confirm.delete_server.detail", list().name), tr("button.delete"), () -> {
             list().remove(server.id);
             if (server.id.equals(selectedId)) {
                 selectedId = null;
             }
             save();
-            flash("Deleted " + server.name, MycelTheme.DIM);
+            flash(tr("flash.deleted", server.name), MycelTheme.DIM);
         });
     }
 
@@ -608,7 +608,7 @@ public final class ServerListScreen extends Screen {
     private void refresh() {
         pings.refresh(list().servers);
         rowsDirty = true;
-        flash("Refreshing " + list().servers.size() + " servers", MycelTheme.DIM);
+        flash(tr("flash.refreshing", list().servers.size()), MycelTheme.DIM);
     }
 
     private void togglePin(SavedServer server) {
@@ -623,7 +623,7 @@ public final class ServerListScreen extends Screen {
     }
 
     private void newList() {
-        prompt("New list", "Name", "", 32, false, name -> {
+        prompt(tr("prompt.new_list"), tr("prompt.name"), "", 32, false, name -> {
             SavedList created = library.addList(name);
             library.active = created.id;
             selectedId = null;
@@ -635,7 +635,7 @@ public final class ServerListScreen extends Screen {
     }
 
     private void newCategory(SavedServer moveIn) {
-        prompt("New category", "Name", "", 32, false, name -> {
+        prompt(tr("prompt.new_category"), tr("prompt.name"), "", 32, false, name -> {
             Category category = list().addCategory(name);
             if (moveIn != null) {
                 moveToCategory(moveIn, category.id);
@@ -677,12 +677,12 @@ public final class ServerListScreen extends Screen {
         moving.category = null;
         target.add(moving, pinned ? Section.PINNED : Section.NONE);
         save();
-        flash((copy ? "Copied " : "Moved ") + server.name + " to " + target.name, MycelTheme.GOOD);
+        flash(tr(copy ? "flash.copied_to" : "flash.moved_to", server.name, target.name), MycelTheme.GOOD);
     }
 
     private void copyServers(SavedList source) {
         minecraft.keyboardHandler.setClipboard(ServerText.export(source));
-        flash("Copied " + source.servers.size() + " servers as text", MycelTheme.GOOD);
+        flash(tr("flash.copied_text", source.servers.size()), MycelTheme.GOOD);
     }
 
     private void pasteServers(SavedList target) {
@@ -695,7 +695,7 @@ public final class ServerListScreen extends Screen {
             }
         }
         if (entries.isEmpty()) {
-            flash("No server addresses on the clipboard", MycelTheme.WARN);
+            flash(tr("flash.clipboard_empty"), MycelTheme.WARN);
             return;
         }
         save();
@@ -703,7 +703,7 @@ public final class ServerListScreen extends Screen {
             my.celium.org.betterserverlist.ServerListStats.count("paste");
         }
         int skipped = entries.size() - added;
-        flash("Pasted " + added + " server" + (added == 1 ? "" : "s") + (skipped > 0 ? ", " + skipped + " already here" : ""),
+        flash(tr(added == 1 ? "flash.pasted.one" : "flash.pasted", added) + (skipped > 0 ? ", " + tr("flash.already_here", skipped) : ""),
                 MycelTheme.GOOD);
     }
 
@@ -711,35 +711,35 @@ public final class ServerListScreen extends Screen {
 
     private void openServerMenu(SavedServer server, int x, int y) {
         List<Item> items = new ArrayList<>();
-        items.add(Item.of("Join", () -> join(server)));
-        items.add(Item.of("Edit…", () -> editServer(server)));
-        items.add(Item.of(server.pinned ? "Unpin" : "Pin to top", () -> togglePin(server)));
-        items.add(Item.sub("Move to category", () -> categoryItems(server)));
+        items.add(Item.of(tr("menu.join"), () -> join(server)));
+        items.add(Item.of(tr("menu.edit"), () -> editServer(server)));
+        items.add(Item.of(tr(server.pinned ? "menu.unpin" : "menu.pin"), () -> togglePin(server)));
+        items.add(Item.sub(tr("menu.move_category"), () -> categoryItems(server)));
         if (library.lists.size() > 1) {
-            items.add(Item.sub("Move to list", () -> listItems(server, false)));
-            items.add(Item.sub("Copy to list", () -> listItems(server, true)));
+            items.add(Item.sub(tr("menu.move_list"), () -> listItems(server, false)));
+            items.add(Item.sub(tr("menu.copy_list"), () -> listItems(server, true)));
         }
-        items.add(Item.of(server.note.isEmpty() ? "Add note…" : "Edit note…", () -> prompt("Note for " + server.name,
-                "Shown when you hover the server's name", server.note, 200, true, note -> {
+        items.add(Item.of(tr(server.note.isEmpty() ? "menu.add_note" : "menu.edit_note"), () -> prompt(tr("prompt.note", server.name),
+                tr("prompt.note.label"), server.note, 200, true, note -> {
                     server.note = note;
                     save();
                 })));
-        items.add(Item.of("Copy address", () -> {
+        items.add(Item.of(tr("menu.copy_address"), () -> {
             minecraft.keyboardHandler.setClipboard(server.address);
-            flash("Copied " + server.address, MycelTheme.GOOD);
+            flash(tr("flash.copied", server.address), MycelTheme.GOOD);
         }));
-        items.add(Item.danger("Delete", () -> deleteServer(server)));
+        items.add(Item.danger(tr("button.delete"), () -> deleteServer(server)));
         menu = new ContextMenu(server.name, x, y, items);
     }
 
     private List<Item> categoryItems(SavedServer server) {
         List<Item> items = new ArrayList<>();
-        items.add(server.category == null ? Item.current("Uncategorized") : Item.of("Uncategorized", () -> moveToCategory(server, null)));
+        items.add(server.category == null ? Item.current(tr("menu.uncategorized")) : Item.of(tr("menu.uncategorized"), () -> moveToCategory(server, null)));
         for (Category category : list().categories) {
             items.add(category.id.equals(server.category) ? Item.current(category.name)
                     : new Item(category.name, 0xFF000000 | category.color, () -> moveToCategory(server, category.id), null, true));
         }
-        items.add(new Item("+ New category…", MycelTheme.LINK, () -> newCategory(server), null, true));
+        items.add(new Item("+ " + tr("menu.new_category"), MycelTheme.LINK, () -> newCategory(server), null, true));
         return items;
     }
 
@@ -755,10 +755,10 @@ public final class ServerListScreen extends Screen {
 
     private void openHeaderMenu(Rows.Header header, int x, int y) {
         List<Item> items = new ArrayList<>();
-        items.add(Item.of(header.collapsed() ? "Expand" : "Collapse", () -> toggleCollapsed(header)));
-        items.add(Item.of("Add server here…", () -> addServer(header.section())));
+        items.add(Item.of(tr(header.collapsed() ? "menu.expand" : "menu.collapse"), () -> toggleCollapsed(header)));
+        items.add(Item.of(tr("menu.add_here"), () -> addServer(header.section())));
         switch (header.kind()) {
-            case PINNED -> items.add(Item.of("Unpin all", () -> {
+            case PINNED -> items.add(Item.of(tr("menu.unpin_all"), () -> {
                 for (SavedServer server : new ArrayList<>(list().servers)) {
                     if (server.pinned) {
                         server.pinned = false;
@@ -769,15 +769,15 @@ public final class ServerListScreen extends Screen {
             }));
             case CATEGORY -> {
                 Category category = header.category();
-                items.add(Item.of("Rename…", () -> prompt("Rename category", "Name", category.name, 32, false, name -> {
+                items.add(Item.of(tr("menu.rename"), () -> prompt(tr("prompt.rename_category"), tr("prompt.name"), category.name, 32, false, name -> {
                     category.name = name;
                     save();
                 })));
-                items.add(Item.sub("Color", () -> {
+                items.add(Item.sub(tr("menu.color"), () -> {
                     List<Item> colors = new ArrayList<>();
                     for (int i = 0; i < Category.COLORS.length; i++) {
                         int color = Category.COLORS[i];
-                        colors.add(new Item((color == category.color ? "✔ " : "■ ") + Category.COLOR_NAMES[i],
+                        colors.add(new Item((color == category.color ? "✔ " : "■ ") + tr("color." + Category.COLOR_NAMES[i].toLowerCase(java.util.Locale.ROOT)),
                                 0xFF000000 | color, () -> {
                                     category.color = color;
                                     save();
@@ -786,16 +786,16 @@ public final class ServerListScreen extends Screen {
                     return colors;
                 }));
                 int index = list().categories.indexOf(category);
-                items.add(index > 0 ? Item.of("Move up", () -> {
+                items.add(index > 0 ? Item.of(tr("menu.move_up"), () -> {
                     list().moveCategory(category.id, -1);
                     save();
-                }) : Item.off("Move up"));
-                items.add(index < list().categories.size() - 1 ? Item.of("Move down", () -> {
+                }) : Item.off(tr("menu.move_up")));
+                items.add(index < list().categories.size() - 1 ? Item.of(tr("menu.move_down"), () -> {
                     list().moveCategory(category.id, 1);
                     save();
-                }) : Item.off("Move down"));
-                items.add(Item.danger("Delete category", () -> confirm("Delete category " + category.name + "?",
-                        "Its servers stay in the list, uncategorized.", "Delete", () -> {
+                }) : Item.off(tr("menu.move_down")));
+                items.add(Item.danger(tr("menu.delete_category"), () -> confirm(tr("confirm.delete_category", category.name),
+                        tr("confirm.delete_category.detail"), tr("button.delete"), () -> {
                             list().removeCategory(category.id);
                             save();
                         })));
@@ -803,42 +803,42 @@ public final class ServerListScreen extends Screen {
             case UNCATEGORIZED -> {
             }
         }
-        menu = new ContextMenu(header.title(), x, y, items);
+        menu = new ContextMenu(headerTitle(header), x, y, items);
     }
 
     private void openListMenu(SavedList target, int x, int y) {
         List<Item> items = new ArrayList<>();
-        items.add(Item.of("Rename…", () -> prompt("Rename list", "Name", target.name, 32, false, name -> {
+        items.add(Item.of(tr("menu.rename"), () -> prompt(tr("prompt.rename_list"), tr("prompt.name"), target.name, 32, false, name -> {
             target.name = name;
             save();
         })));
         int index = library.lists.indexOf(target);
-        items.add(index > 0 ? Item.of("Move up", () -> {
+        items.add(index > 0 ? Item.of(tr("menu.move_up"), () -> {
             library.moveList(target.id, -1);
             save();
-        }) : Item.off("Move up"));
-        items.add(index < library.lists.size() - 1 ? Item.of("Move down", () -> {
+        }) : Item.off(tr("menu.move_up")));
+        items.add(index < library.lists.size() - 1 ? Item.of(tr("menu.move_down"), () -> {
             library.moveList(target.id, 1);
             save();
-        }) : Item.off("Move down"));
-        items.add(Item.of("Copy servers as text", () -> copyServers(target)));
-        items.add(Item.of("Paste servers", () -> pasteServers(target)));
-        items.add(library.lists.size() > 1 ? Item.danger("Delete list", () -> confirm("Delete list " + target.name + "?",
-                target.servers.size() + " servers in it are deleted with it.", "Delete", () -> {
+        }) : Item.off(tr("menu.move_down")));
+        items.add(Item.of(tr("menu.copy_text"), () -> copyServers(target)));
+        items.add(Item.of(tr("menu.paste"), () -> pasteServers(target)));
+        items.add(library.lists.size() > 1 ? Item.danger(tr("menu.delete_list"), () -> confirm(tr("confirm.delete_list", target.name),
+                tr("confirm.delete_list.detail", target.servers.size()), tr("button.delete"), () -> {
                     library.removeList(target.id);
                     selectedId = null;
                     clampSideScroll();
                     save();
-                })) : Item.off("Delete list (last one)"));
+                })) : Item.off(tr("menu.delete_list.last")));
         menu = new ContextMenu(target.name, x, y, items);
     }
 
     private void openBlankMenu(int x, int y) {
         List<Item> items = new ArrayList<>();
-        items.add(Item.of("Add server…", () -> addServer(Section.NONE)));
-        items.add(Item.of("New category…", () -> newCategory(null)));
-        items.add(Item.of("Paste servers", () -> pasteServers(list())));
-        items.add(Item.of("Copy servers as text", () -> copyServers(list())));
+        items.add(Item.of(tr("menu.add_server"), () -> addServer(Section.NONE)));
+        items.add(Item.of(tr("menu.new_category"), () -> newCategory(null)));
+        items.add(Item.of(tr("menu.paste"), () -> pasteServers(list())));
+        items.add(Item.of(tr("menu.copy_text"), () -> copyServers(list())));
         menu = new ContextMenu(list().name, x, y, items);
     }
 
@@ -904,7 +904,7 @@ public final class ServerListScreen extends Screen {
                     online++;
                 }
             }
-            text = total + (total == 1 ? " server" : " servers") + " · " + online + " online";
+            text = tr(total == 1 ? "title.count.one" : "title.count", total, online);
             color = 0xFFFFCDD2;
         }
         int max = width - font.width(title) - 32;
@@ -913,7 +913,7 @@ public final class ServerListScreen extends Screen {
     }
 
     private void renderSidebar(GuiGraphicsExtractor gfx, int mx, int my, int rawX, int rawY) {
-        gfx.text(font, "LISTS", 10, TITLE_BAR + 9, MycelTheme.FAINT);
+        gfx.text(font, tr("sidebar.lists").toUpperCase(java.util.Locale.ROOT), 10, TITLE_BAR + 9, MycelTheme.FAINT);
         int x0 = 4;
         int x1 = sideW() - 4;
         int dropRow = dragging ? sideRowAt(rawX, rawY) : -1;
@@ -929,7 +929,7 @@ public final class ServerListScreen extends Screen {
                 if (hover) {
                     gfx.fill(x0, y, x1, y + h, HOVER);
                 }
-                gfx.text(font, "+ New list", x0 + 6, y + 4, hover ? MycelTheme.HEADING : MycelTheme.LINK);
+                gfx.text(font, MycelTheme.fit(font, "+ " + tr("prompt.new_list"), x1 - x0 - 8), x0 + 6, y + 4, hover ? MycelTheme.HEADING : MycelTheme.LINK);
                 continue;
             }
             SavedList each = library.lists.get(index);
@@ -955,9 +955,9 @@ public final class ServerListScreen extends Screen {
                     total - sideVisibleRows());
         }
         if (dragging) {
-            gfx.text(font, MycelTheme.fit(font, "Drop on a list", x1 - x0 - 4), x0 + 6, panelBottom() - 24,
+            gfx.text(font, MycelTheme.fit(font, tr("drag.drop"), x1 - x0 - 4), x0 + 6, panelBottom() - 24,
                     MycelTheme.FAINT);
-            gfx.text(font, MycelTheme.fit(font, "Ctrl: copy", x1 - x0 - 4), x0 + 6, panelBottom() - 13,
+            gfx.text(font, MycelTheme.fit(font, tr("drag.ctrl"), x1 - x0 - 4), x0 + 6, panelBottom() - 13,
                     MycelTheme.FAINT);
         }
     }
@@ -976,7 +976,7 @@ public final class ServerListScreen extends Screen {
             gfx.fill(chip.x(), TOOL_Y, chip.x() + chip.w(), TOOL_Y + TOOL_H, edge);
             gfx.fill(chip.x() + 1, TOOL_Y + 1, chip.x() + chip.w() - 1, TOOL_Y + TOOL_H - 1, fill);
             int tx = chip.x() + 6;
-            if (chip.label().equals("Online only")) {
+            if (chip.label().equals(tr("chip.online"))) {
                 // A small switch: green dot when on.
                 gfx.fill(tx, TOOL_Y + 6, tx + 5, TOOL_Y + 11, chip.on() ? MycelTheme.GOOD : MycelTheme.OFF);
                 tx += 8;
@@ -992,11 +992,10 @@ public final class ServerListScreen extends Screen {
         int x0 = listX0();
         int x1 = listX1();
         if (lines.stream().noneMatch(line -> line instanceof ServerLine || line instanceof HeaderLine)) {
-            String empty = !query.isBlank() || library.hideOffline ? "No servers match"
-                    : "No servers in this list yet";
+            String empty = tr(!query.isBlank() || library.hideOffline ? "empty.no_match" : "empty.none");
             int y = LIST_TOP + contentHeight + 20;
             gfx.centeredText(font, empty, (x0 + x1) / 2, y, MycelTheme.TEXT);
-            gfx.centeredText(font, MycelTheme.fit(font, "Add Server, or right-click to paste a list", x1 - x0),
+            gfx.centeredText(font, MycelTheme.fit(font, tr("empty.hint"), x1 - x0),
                     (x0 + x1) / 2, y + 12, MycelTheme.DIM);
         }
         if (lines.isEmpty()) {
@@ -1041,7 +1040,7 @@ public final class ServerListScreen extends Screen {
             case UNCATEGORIZED -> {
             }
         }
-        String title = MycelTheme.fit(font, header.title(), Math.max(20, x1 - x - 40));
+        String title = MycelTheme.fit(font, headerTitle(header), Math.max(20, x1 - x - 40));
         gfx.text(font, title, x, ty, header.kind() == Rows.Kind.UNCATEGORIZED ? MycelTheme.DIM : MycelTheme.HEADING);
         x += font.width(title) + 6;
         x = countPill(gfx, String.valueOf(header.count()), x, ty) + 6;
@@ -1126,7 +1125,7 @@ public final class ServerListScreen extends Screen {
             gfx.fill(ix, iy, ix + ICON, iy + ICON, 0xA0909090);
             gfx.blitSprite(RenderPipelines.GUI_TEXTURED, overIcon ? JOIN_HIGHLIGHTED : JOIN, ix, iy, ICON, ICON);
             if (overStar) {
-                gfx.setTooltipForNextFrame(font, Component.literal(server.pinned ? "Unpin" : "Pin to top"), mx, my);
+                gfx.setTooltipForNextFrame(font, Component.literal(tr(server.pinned ? "menu.unpin" : "menu.pin")), mx, my);
             } else if (inside(mx, my, pingX, y + 3, 10, 8)) {
                 gfx.setTooltipForNextFrame(font, pingTooltip(data), mx, my);
             } else if (players != null && inside(mx, my, playersX, y + 2, playersW, 10) && !data.playerList.isEmpty()) {
@@ -1170,19 +1169,19 @@ public final class ServerListScreen extends Screen {
         }
         Category category = list().category(server.category);
         if (category != null) {
-            out.add(Component.literal("Category: ").withColor(MycelTheme.DIM)
+            out.add(Component.literal(tr("tooltip.category") + " ").withColor(MycelTheme.DIM)
                     .append(Component.literal(category.name).withColor(0xFF000000 | category.color)));
         }
         if (!server.note.isEmpty()) {
-            out.add(Component.literal("Note: ").withColor(MycelTheme.DIM)
+            out.add(Component.literal(tr("tooltip.note") + " ").withColor(MycelTheme.DIM)
                     .append(Component.literal(server.note).withColor(MycelTheme.VALUE)));
         }
-        String played = server.lastJoined <= 0 ? "Never played"
-                : "Played " + TimeText.ago(System.currentTimeMillis(), server.lastJoined) + " · " + server.joins
-                        + (server.joins == 1 ? " join" : " joins");
+        String played = server.lastJoined <= 0 ? tr("tooltip.never_played")
+                : tr(server.joins == 1 ? "tooltip.played.one" : "tooltip.played",
+                        ago(System.currentTimeMillis(), server.lastJoined), server.joins);
         out.add(Component.literal(played).withColor(MycelTheme.FAINT));
         if (data.state() == ServerData.State.SUCCESSFUL || data.state() == ServerData.State.INCOMPATIBLE) {
-            out.add(Component.literal("Version: ").withColor(MycelTheme.FAINT).append(data.version));
+            out.add(Component.literal(tr("tooltip.version") + " ").withColor(MycelTheme.FAINT).append(data.version));
         }
         return out;
     }
@@ -1194,12 +1193,12 @@ public final class ServerListScreen extends Screen {
         int ty = y + 6;
         chevron(gfx, x0 + 1, ty + 1, library.lanCollapsed && query.isBlank());
         int x = x0 + 10;
-        gfx.text(font, "LAN worlds", x, ty, MycelTheme.LINK);
-        x += font.width("LAN worlds") + 6;
+        gfx.text(font, tr("lan.title"), x, ty, MycelTheme.LINK);
+        x += font.width(tr("lan.title")) + 6;
         if (lanServers.isEmpty()) {
-            String scanning = "scanning" + ".".repeat((int) (Util.getMillis() / 400 % 4));
+            String scanning = tr("lan.scanning") + ".".repeat((int) (Util.getMillis() / 400 % 4));
             gfx.text(font, scanning, x, ty, MycelTheme.FAINT);
-            x += font.width("scanning...") + 6;
+            x += font.width(tr("lan.scanning") + "...") + 6;
         } else {
             x = countPill(gfx, String.valueOf(lanServers.size()), x, ty) + 6;
         }
@@ -1244,7 +1243,7 @@ public final class ServerListScreen extends Screen {
                 gfx.fill(listX0() - 2, y, listX1() + 2, y + 2, MycelTheme.ACCENT);
             }
         }
-        String label = (hasCopyModifier() && drop != null && drop.list() != null ? "Copy " : "") + pressed.name;
+        String label = hasCopyModifier() && drop != null && drop.list() != null ? tr("drag.copy", pressed.name) : pressed.name;
         int w = Math.min(160, font.width(label) + 12);
         int x = mouseX + 8;
         int y = mouseY + 4;
@@ -1314,7 +1313,7 @@ public final class ServerListScreen extends Screen {
             if (right) {
                 openListMenu(target, (int) mx, (int) my);
             } else if (doubleClick && target == list()) {
-                prompt("Rename list", "Name", target.name, 32, false, name -> {
+                prompt(tr("prompt.rename_list"), tr("prompt.name"), target.name, 32, false, name -> {
                     target.name = name;
                     save();
                 });
@@ -1402,7 +1401,7 @@ public final class ServerListScreen extends Screen {
                 library.sort = library.sort.next();
                 my.celium.org.betterserverlist.ServerListStats.count("sort_change");
                 save();
-                flash("Sorted by " + library.sort.label.toLowerCase(Locale.ROOT), MycelTheme.DIM);
+                flash(tr("flash.sorted", sortName(library.sort)), MycelTheme.DIM);
             }
         }
     }
@@ -1471,7 +1470,7 @@ public final class ServerListScreen extends Screen {
         } else {
             // Sorted or filtered: only the section changes.
             list().add(pressed, list().sectionOf(drop.target()));
-            flash("Sorted by " + library.sort.label.toLowerCase(Locale.ROOT) + ": moved to the section only",
+            flash(tr("flash.sorted_section", sortName(library.sort)),
                     MycelTheme.DIM);
         }
         selectedId = pressed.id;
@@ -1575,7 +1574,7 @@ public final class ServerListScreen extends Screen {
         }
         if (server != null && event.hasControlDown() && key == InputConstants.KEY_C) {
             minecraft.keyboardHandler.setClipboard(server.address);
-            flash("Copied " + server.address, MycelTheme.GOOD);
+            flash(tr("flash.copied", server.address), MycelTheme.GOOD);
             return true;
         }
         return super.keyPressed(event);
@@ -1639,5 +1638,33 @@ public final class ServerListScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    /** A text of this mod in the game's language. */
+    static String tr(String path, Object... args) {
+        return net.minecraft.client.resources.language.I18n.get("betterserverlist." + path, args);
+    }
+
+    private static String sortName(Sort sort) {
+        return tr("sort." + sort.name().toLowerCase(java.util.Locale.ROOT));
+    }
+
+    /** "5 min ago" in the game's language. */
+    private static String ago(long now, long then) {
+        long[] amount = TimeText.amount(now, then);
+        if (amount == null) {
+            return tr("time.just_now");
+        }
+        String unit = TimeText.UNITS[(int) amount[0]];
+        return tr("time." + unit + (amount[1] == 1 ? ".one" : ""), amount[1]);
+    }
+
+    /** Section headers: the built-in ones in the game's language, categories by their own name. */
+    private static String headerTitle(Rows.Header header) {
+        return switch (header.kind()) {
+            case PINNED -> tr("section.pinned");
+            case UNCATEGORIZED -> tr("menu.uncategorized");
+            default -> header.title();
+        };
     }
 }

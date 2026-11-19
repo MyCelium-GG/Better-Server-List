@@ -91,7 +91,7 @@ final class ContextMenu {
         gfx.fill(x + 2, y + PAD + ITEM_H, x + w - 2, y + PAD + ITEM_H + 1, MycelTheme.BORDER);
         int row = 1;
         if (stack.size() > 1) {
-            renderRow(gfx, font, row++, "‹ Back", MycelTheme.DIM, true, false, mouseX, mouseY);
+            renderRow(gfx, font, row++, "‹ " + net.minecraft.client.resources.language.I18n.get("gui.back"), MycelTheme.DIM, true, false, mouseX, mouseY);
         }
         for (Item item : items()) {
             renderRow(gfx, font, row++, item.label(), item.color(), item.enabled(), item.submenu() != null, mouseX, mouseY);

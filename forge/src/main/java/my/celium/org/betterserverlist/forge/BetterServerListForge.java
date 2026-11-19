@@ -19,6 +19,15 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 @Mod(BetterServerListMod.ID)
 public final class BetterServerListForge {
     public BetterServerListForge(@SuppressWarnings("unused") FMLJavaModLoadingContext context) {
+        if (!net.minecraftforge.fml.ModList.isLoaded("mycel")) {
+            my.celium.org.betterserverlist.MissingMycel.logOnce();
+            if (net.minecraftforge.fml.loading.FMLEnvironment.dist == net.minecraftforge.api.distmarker.Dist.CLIENT) {
+                net.minecraftforge.event.TickEvent.ClientTickEvent.Post.BUS.addListener(
+                        event -> my.celium.org.betterserverlist.MissingMycel.tick(net.minecraft.client.Minecraft.getInstance()));
+            }
+            return;
+        }
+        my.celium.org.betterserverlist.ModGate.open();
         BetterServerListMod.init();
         if (FMLEnvironment.dist == Dist.CLIENT) {
             ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,

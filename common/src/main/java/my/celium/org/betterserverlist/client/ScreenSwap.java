@@ -56,11 +56,11 @@ public final class ScreenSwap {
         if (screen == null || screen.getClass() != JoinMultiplayerScreen.class || !BetterServerListMod.isModEnabled()) {
             return null;
         }
-        Button button = Button.builder(Component.literal("Better list"), b -> {
+        Button button = Button.builder(Component.translatable("betterserverlist.swap.button"), b -> {
             vanillaChosen = false;
             MycelScreens.open(new ServerListScreen(lastScreenOf(screen)));
         }).bounds(screen.width - 84, 6, 78, 20).build();
-        button.setTooltip(Tooltip.create(Component.literal("Back to Better Server List")));
+        button.setTooltip(Tooltip.create(Component.translatable("betterserverlist.swap.tip")));
         return button;
     }
 

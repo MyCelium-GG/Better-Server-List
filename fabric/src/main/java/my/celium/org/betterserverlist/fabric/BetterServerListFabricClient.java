@@ -15,6 +15,11 @@ import net.minecraft.client.gui.screens.Screen;
 public final class BetterServerListFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        if (!net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("mycel")) {
+            net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents.END_CLIENT_TICK.register(
+                    my.celium.org.betterserverlist.MissingMycel::tick);
+            return;
+        }
         ScreenEvents.AFTER_INIT.register((client, screen, width, height) -> {
             Screen replacement = ScreenSwap.replacement(screen);
             if (replacement != null) {
